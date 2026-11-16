@@ -1,0 +1,25 @@
+# Optional: Static Bridge next to Lingua Bridge (dev/test.sh adds it when STATIC_BRIDGE_PLUGIN names its plugin
+# folder). Static Bridge needs PHP 8.4. Its real code picks the routes to export and makes a full static copy, which
+# the `static` service serves as a static host would (dev/static-router.php: files only, nothing runs) on
+# 127.0.0.1:${LB_STATIC_PORT:-8896}, for tests/wp/static-copy.test.mjs (C9).
+services:
+  wordpress:
+    image: wordpress:php8.4-apache
+    volumes:
+      - ${STATIC_BRIDGE_PLUGIN:?set STATIC_BRIDGE_PLUGIN}:/var/www/html/wp-content/plugins/static-bridge:ro
+  cli:
+    image: wordpress:cli-php8.4
+    volumes:
+      - ${STATIC_BRIDGE_PLUGIN:?set STATIC_BRIDGE_PLUGIN}:/var/www/html/wp-content/plugins/static-bridge:ro
+  static:
+    image: php:8.4-cli
+    profiles: ["static"]
+    command: ["php", "-S", "0.0.0.0:80", "-t", "/srv/wp/wp-content/static-bridge/current", "/srv/router.php"]
+    environment:
+      LB_ORIGIN: http://localhost:${LB_PORT:-8895}
+    ports:
+      - "127.0.0.1:${LB_STATIC_PORT:-8896}:80"
+    volumes:
+      - wp:/srv/wp:ro
+      - ${LB_PLUGIN_SOURCE:-..}:/srv/wp/wp-content/plugins/lingua-bridge:ro
+      - ./static-router.php:/srv/router.php:ro

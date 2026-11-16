@@ -1,0 +1,59 @@
+# Local WordPress for Lingua Bridge integration tests (dev/up.sh, dev/test.sh). Local images only, 127.0.0.1 only.
+# Credentials are generated into dev/.env by dev/up.sh (git-ignored); nothing here is a real site.
+# LB_PLUGIN_SOURCE mounts another copy of the plugin (an extracted release ZIP) instead of this checkout.
+name: lb-dev
+
+x-wp-env: &wp-env
+  WORDPRESS_DB_HOST: db
+  WORDPRESS_DB_NAME: wordpress
+  WORDPRESS_DB_USER: wordpress
+  WORDPRESS_DB_PASSWORD: ${LB_DB_PASSWORD:?run dev/up.sh}
+  WORDPRESS_DEBUG: "1"
+
+x-wp-volumes: &wp-volumes
+  - wp:/var/www/html
+  - ${LB_PLUGIN_SOURCE:-..}:/var/www/html/wp-content/plugins/lingua-bridge:ro
+  - ./mu/lb-dev-fixtures.php:/var/www/html/wp-content/mu-plugins/lb-dev-fixtures.php:ro
+  - ../tests/wp:/lb-tests:ro
+
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: ${LB_DB_PASSWORD:?run dev/up.sh}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 2s
+      retries: 30
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${LB_PORT:-8895}:80"
+    environment: *wp-env
+    volumes: *wp-volumes
+
+  cli:
+    image: wordpress:cli-php8.3
+    profiles: ["cli"]
+    user: "33:33"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      <<: *wp-env
+      HOME: /tmp
+    volumes: *wp-volumes
+    working_dir: /var/www/html
+
+volumes:
+  wp:
+  db:

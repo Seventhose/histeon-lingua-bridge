@@ -1,0 +1,132 @@
+/* Etch-native custom language menu. */
+[data-lb-etch-language-switcher] {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	align-self: center; /* centred in a header row without rules on the header */
+	vertical-align: middle;
+	max-inline-size: 100%;
+}
+
+[data-lb-etch-language-switcher][data-lb-open="true"] {
+	z-index: 1000;
+}
+
+[data-lb-etch-language-switcher] > button[data-lb-language-trigger] {
+	appearance: none;
+	box-sizing: border-box;
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem;
+	inline-size: auto;
+	min-inline-size: 4.5rem;
+	max-inline-size: 100%;
+	block-size: 2.25rem;
+	min-block-size: 2.25rem;
+	margin: 0;
+	padding: 0 0.6rem;
+	border: 1px solid var(--border-color, #c9cdd2);
+	border-radius: var(--radius, 0.35rem);
+	background: var(--white, #fff);
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: 400;
+	line-height: 1.2;
+	text-align: start;
+	text-decoration: none;
+	white-space: nowrap;
+	box-shadow: none;
+	vertical-align: middle;
+	cursor: pointer;
+}
+
+[data-lb-etch-language-switcher] > button[data-lb-language-trigger]::after {
+	content: "";
+	position: static;
+	display: block;
+	flex: 0 0 0.45rem;
+	inline-size: 0.45rem;
+	block-size: 0.45rem;
+	box-sizing: border-box;
+	margin: 0;
+	border: 0;
+	border-inline-end: 1.5px solid currentColor;
+	border-block-end: 1.5px solid currentColor;
+	background: transparent;
+	/* Only the transform changes when the menu opens: the button never moves or resizes. */
+	transform: translateY(-0.1em) rotate(45deg);
+	transition: transform 150ms ease;
+}
+
+[data-lb-etch-language-switcher][data-lb-open="true"] > button[data-lb-language-trigger]::after {
+	transform: translateY(0.1em) rotate(225deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	[data-lb-etch-language-switcher] > button[data-lb-language-trigger]::after {
+		transition: none;
+	}
+}
+
+[data-lb-etch-language-switcher] > button[data-lb-language-trigger]:hover {
+	border-color: var(--primary, currentColor);
+}
+
+[data-lb-etch-language-switcher] > button[data-lb-language-trigger]:focus-visible {
+	outline: 2px solid var(--primary, currentColor);
+	outline-offset: 2px;
+}
+
+[data-lb-language-menu][hidden] {
+	display: none !important;
+}
+
+[data-lb-language-menu] {
+	box-sizing: border-box;
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	inset-block-start: calc(100% + var(--space-xs, 0.25rem));
+	inset-inline-start: 0;
+	z-index: 1001;
+	inline-size: max-content;
+	min-inline-size: 100%;
+	max-inline-size: min(20rem, calc(100vw - 2rem));
+	margin: 0;
+	padding: 0.25rem;
+	border: 1px solid var(--border-color, #d4d8dd);
+	border-radius: var(--radius, 0.35rem);
+	background: var(--white, #fff);
+	box-shadow: 0 0.4rem 1.1rem rgba(20, 30, 40, 0.16);
+}
+
+[data-lb-language-menu] [role="menuitem"] {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	min-block-size: 2.25rem;
+	padding: 0.35rem 0.6rem;
+	border-radius: 0.2rem;
+	color: inherit;
+	font: inherit;
+	line-height: 1.2;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+[data-lb-language-menu] [role="menuitem"]:hover,
+[data-lb-language-menu] [role="menuitem"]:focus-visible {
+	background: var(--primary, #2864d8);
+	color: var(--white, #fff);
+	outline: none;
+}
+
+/* The current language: marked by colour, not weight, so its width never changes. */
+[data-lb-language-menu] [role="menuitem"][aria-current="page"] {
+	background: var(--primary, #2864d8);
+	color: var(--white, #fff);
+}

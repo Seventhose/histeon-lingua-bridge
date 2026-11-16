@@ -1,0 +1,144 @@
+/* Run as a top-level async body in the Etch connector evaluation context. */
+const bundle = {
+  "format": "lingua-bridge-etch-component-bundle",
+  "formatVersion": 3,
+  "requires": {
+    "linguaBridgeShortcode": "[lingua_bridge_switcher]",
+    "etchApi": [
+      "components.createAsync",
+      "components.updateAsync",
+      "stylesheets.createAsync",
+      "stylesheets.updateAsync"
+    ]
+  },
+  "component": {
+    "name": "Selettore lingua — Lingua Bridge",
+    "key": "LinguaBridgeLanguageSwitcher",
+    "description": "Menu a discesa accessibile per le versioni pubblicate del contenuto corrente.",
+    "properties": [],
+    "blocks": [
+      {
+        "type": "etch/element",
+        "version": 1,
+        "context": {
+          "name": "Selettore lingua Lingua Bridge"
+        },
+        "options": {},
+        "styles": [],
+        "script": {
+          "code": "(function () {\n\tvar roots = document.querySelectorAll('[data-lb-etch-language-switcher]');\n\n\troots.forEach(function (root) {\n\t\tif (root.dataset.lbEtchSwitcherReady === 'true') return;\n\n\t\tvar trigger = root.querySelector('[data-lb-language-trigger]');\n\t\tvar currentLabel = root.querySelector('[data-lb-language-current]');\n\t\tvar menu = root.querySelector('[data-lb-language-menu]');\n\t\tvar source = root.querySelector('.lb-language-switcher');\n\t\tif (!trigger || !currentLabel || !menu || !source) return;\n\n\t\tvar links = Array.prototype.slice.call(source.querySelectorAll('a[href]'));\n\t\tif (links.length < 2) {\n\t\t\tsource.remove();\n\t\t\troot.hidden = true;\n\t\t\treturn;\n\t\t}\n\n\t\tmenu.replaceChildren();\n\t\tvar activeLink = links.find(function (link) {\n\t\t\treturn link.getAttribute('aria-current') === 'page';\n\t\t}) || links[0];\n\n\t\tlinks.forEach(function (link) {\n\t\t\tvar item = document.createElement('a');\n\t\t\titem.href = link.href;\n\t\t\titem.textContent = link.textContent.trim();\n\t\t\titem.setAttribute('role', 'menuitem');\n\t\t\titem.tabIndex = -1;\n\t\t\tvar language = link.getAttribute('lang');\n\t\t\tif (language) item.lang = language;\n\t\t\tif (link.getAttribute('aria-current') === 'page') {\n\t\t\t\titem.setAttribute('aria-current', 'page');\n\t\t\t}\n\t\t\tmenu.appendChild(item);\n\t\t});\n\n\t\t// The labels screen readers hear, in the page's own language (Italian on Italian pages, English elsewhere).\n\t\tvar italian = (document.documentElement.lang || '').toLowerCase().indexOf('it') === 0;\n\t\tcurrentLabel.textContent = activeLink.textContent.trim();\n\t\ttrigger.setAttribute('aria-label', (italian ? 'Lingua: ' : 'Language: ') + currentLabel.textContent);\n\t\tmenu.setAttribute('aria-label', italian ? 'Lingue disponibili' : 'Available languages');\n\t\tmenu.hidden = true;\n\t\troot.hidden = false;\n\n\t\tfunction getItems() {\n\t\t\treturn Array.prototype.slice.call(menu.querySelectorAll('[role=\"menuitem\"]'));\n\t\t}\n\n\t\tfunction setOpen(open, focusFirst) {\n\t\t\tmenu.hidden = !open;\n\t\t\ttrigger.setAttribute('aria-expanded', open ? 'true' : 'false');\n\t\t\troot.dataset.lbOpen = open ? 'true' : 'false';\n\t\t\tif (open && focusFirst) {\n\t\t\t\tvar items = getItems();\n\t\t\t\tif (items.length) items[focusFirst === 'last' ? items.length - 1 : 0].focus();\n\t\t\t}\n\t\t}\n\n\t\ttrigger.addEventListener('click', function () {\n\t\t\tsetOpen(menu.hidden, false);\n\t\t});\n\n\t\ttrigger.addEventListener('keydown', function (event) {\n\t\t\tif (event.key === 'ArrowDown' || event.key === 'ArrowUp') {\n\t\t\t\tevent.preventDefault();\n\t\t\t\tsetOpen(true, event.key === 'ArrowUp' ? 'last' : 'first');\n\t\t\t} else if (event.key === 'Escape' && !menu.hidden) {\n\t\t\t\tevent.preventDefault();\n\t\t\t\tsetOpen(false, false);\n\t\t\t}\n\t\t});\n\n\t\tmenu.addEventListener('keydown', function (event) {\n\t\t\tvar items = getItems();\n\t\t\tvar index = items.indexOf(document.activeElement);\n\t\t\tif (!items.length) return;\n\n\t\t\tif (event.key === 'Escape') {\n\t\t\t\tevent.preventDefault();\n\t\t\t\tsetOpen(false, false);\n\t\t\t\ttrigger.focus();\n\t\t\t} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {\n\t\t\t\tevent.preventDefault();\n\t\t\t\tvar direction = event.key === 'ArrowDown' ? 1 : -1;\n\t\t\t\titems[(index + direction + items.length) % items.length].focus();\n\t\t\t} else if (event.key === 'Home' || event.key === 'End') {\n\t\t\t\tevent.preventDefault();\n\t\t\t\titems[event.key === 'Home' ? 0 : items.length - 1].focus();\n\t\t\t} else if (event.key === 'Tab') {\n\t\t\t\tsetOpen(false, false);\n\t\t\t}\n\t\t});\n\n\t\tdocument.addEventListener('pointerdown', function (event) {\n\t\t\tif (!root.contains(event.target)) setOpen(false, false);\n\t\t});\n\n\t\tsource.remove();\n\t\troot.dataset.lbEtchSwitcherReady = 'true';\n\t});\n})();\n"
+        },
+        "attributes": {
+          "data-lb-etch-language-switcher": "",
+          "hidden": ""
+        },
+        "tag": "div",
+        "children": [
+          {
+            "type": "etch/element",
+            "version": 1,
+            "context": {
+              "name": "Pulsante lingua"
+            },
+            "options": {},
+            "styles": [],
+            "attributes": {
+              "type": "button",
+              "data-lb-language-trigger": "",
+              "aria-label": "Seleziona la lingua",
+              "aria-haspopup": "menu",
+              "aria-expanded": "false"
+            },
+            "tag": "button",
+            "children": [
+              {
+                "type": "etch/element",
+                "version": 1,
+                "context": {
+                  "name": "Lingua corrente"
+                },
+                "options": {},
+                "styles": [],
+                "attributes": {
+                  "data-lb-language-current": ""
+                },
+                "tag": "span",
+                "children": [
+                  {
+                    "type": "etch/text",
+                    "version": 1,
+                    "context": {
+                      "name": "Etichetta lingua"
+                    },
+                    "options": {},
+                    "styles": [],
+                    "children": [],
+                    "text": "Lingua"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "etch/element",
+            "version": 1,
+            "context": {
+              "name": "Menu delle lingue"
+            },
+            "options": {},
+            "styles": [],
+            "attributes": {
+              "data-lb-language-menu": "",
+              "role": "menu",
+              "aria-label": "Lingue disponibili",
+              "hidden": ""
+            },
+            "tag": "div",
+            "children": []
+          },
+          {
+            "type": "etch/passthrough",
+            "version": 1,
+            "context": {
+              "name": "Destinazioni traduzioni"
+            },
+            "options": {},
+            "styles": [],
+            "children": [],
+            "gutenbergBlock": {
+              "blockName": "core/shortcode",
+              "attrs": {},
+              "innerBlocks": [],
+              "innerHTML": "[lingua_bridge_switcher]",
+              "innerContent": [
+                "[lingua_bridge_switcher]"
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "stylesheet": {
+    "name": "Lingua Bridge — Selettore lingua (ACSS)",
+    "type": "default",
+    "css": "/* Etch-native custom language menu. */\n[data-lb-etch-language-switcher] {\n\tposition: relative;\n\tdisplay: inline-flex;\n\talign-items: center;\n\tmax-inline-size: 100%;\n}\n\n[data-lb-etch-language-switcher][data-lb-open=\"true\"] {\n\tz-index: 1000;\n}\n\n/* Center the header links and the selector on the same flex row. */\n.cu-header__utility-inner.polylang-switcher {\n\talign-items: center;\n}\n\n[data-lb-etch-language-switcher] > button[data-lb-language-trigger] {\n\tappearance: none;\n\tbox-sizing: border-box;\n\tdisplay: inline-flex;\n\tflex: 0 0 auto;\n\talign-items: center;\n\tjustify-content: space-between;\n\tgap: 0.65rem;\n\tinline-size: 7rem;\n\tmin-inline-size: 7rem;\n\tmax-inline-size: 100%;\n\tblock-size: 3rem;\n\tmin-block-size: 3rem;\n\tmargin: 0;\n\tpadding: 0 0.75rem;\n\tborder: 1px solid var(--border-color, #c9cdd2);\n\tborder-radius: var(--radius, 0.35rem);\n\tbackground: var(--white, #fff);\n\tcolor: inherit;\n\tfont-family: inherit;\n\tfont-size: inherit;\n\tfont-weight: 400;\n\tline-height: 1.2;\n\ttext-align: start;\n\ttext-decoration: none;\n\twhite-space: nowrap;\n\tbox-shadow: none;\n\tvertical-align: middle;\n\tcursor: pointer;\n}\n\n[data-lb-etch-language-switcher] > button[data-lb-language-trigger]::after {\n\tcontent: \"\";\n\tposition: static;\n\tdisplay: block;\n\tflex: 0 0 0.45rem;\n\tinline-size: 0.45rem;\n\tblock-size: 0.45rem;\n\tbox-sizing: border-box;\n\tmargin: 0 0 0.15rem;\n\tborder: 0;\n\tborder-inline-end: 1.5px solid currentColor;\n\tborder-block-end: 1.5px solid currentColor;\n\tbackground: transparent;\n\ttransform: rotate(45deg);\n\ttransition: transform 150ms ease;\n}\n\n[data-lb-etch-language-switcher][data-lb-open=\"true\"] > button[data-lb-language-trigger]::after {\n\tmargin-block-end: 0;\n\ttransform: rotate(225deg);\n}\n\n[data-lb-etch-language-switcher] > button[data-lb-language-trigger]:hover {\n\tborder-color: var(--primary, currentColor);\n}\n\n[data-lb-etch-language-switcher] > button[data-lb-language-trigger]:focus-visible {\n\toutline: 2px solid var(--primary, currentColor);\n\toutline-offset: 2px;\n}\n\n[data-lb-language-menu][hidden] {\n\tdisplay: none !important;\n}\n\n[data-lb-language-menu] {\n\tbox-sizing: border-box;\n\tposition: absolute;\n\tdisplay: flex;\n\tflex-direction: column;\n\tgap: var(--space-xs, 0.25rem);\n\tinset-block-start: calc(100% + 0.2rem);\n\tinset-inline-start: 0;\n\tz-index: 1001;\n\tinline-size: max-content;\n\tmin-inline-size: 100%;\n\tmax-inline-size: min(20rem, calc(100vw - 2rem));\n\tmargin: 0;\n\tpadding: 0.25rem;\n\tborder: 1px solid var(--border-color, #d4d8dd);\n\tborder-radius: var(--radius, 0.35rem);\n\tbackground: var(--white, #fff);\n\tbox-shadow: 0 0.4rem 1.1rem rgba(20, 30, 40, 0.16);\n}\n\n[data-lb-language-menu] [role=\"menuitem\"] {\n\tbox-sizing: border-box;\n\tdisplay: flex;\n\talign-items: center;\n\tmin-block-size: 2.5rem;\n\tpadding: 0.45rem 0.65rem;\n\tborder-radius: 0.2rem;\n\tcolor: inherit;\n\tfont: inherit;\n\tline-height: 1.2;\n\ttext-decoration: none;\n\twhite-space: nowrap;\n}\n\n[data-lb-language-menu] [role=\"menuitem\"]:hover,\n[data-lb-language-menu] [role=\"menuitem\"]:focus-visible {\n\tbackground: var(--primary, #2864d8);\n\tcolor: var(--white, #fff);\n\toutline: none;\n}\n\n[data-lb-language-menu] [role=\"menuitem\"][aria-current=\"page\"] {\n\tbackground: var(--primary, #2864d8);\n\tcolor: var(--white, #fff);\n\tfont-weight: 600;\n}\n"
+  }
+};
+if (typeof etch === 'undefined' || !etch.components || !etch.stylesheets) {
+  throw new Error('Etch components/stylesheets API non disponibile in questa sessione.');
+}
+const existingComponent = etch.components.list().find((item) => item.key === bundle.component.key);
+let componentId = existingComponent ? existingComponent.id : null;
+if (componentId === null) componentId = await etch.components.createAsync(bundle.component.name);
+await etch.components.updateAsync(componentId, {
+  key: bundle.component.key,
+  description: bundle.component.description,
+  properties: bundle.component.properties,
+  blocks: bundle.component.blocks
+});
+const existingStylesheet = etch.stylesheets.list().find((item) => item.name === bundle.stylesheet.name);
+let stylesheetId = existingStylesheet ? existingStylesheet.id : null;
+if (stylesheetId === null) stylesheetId = await etch.stylesheets.createAsync(bundle.stylesheet);
+else await etch.stylesheets.updateAsync(stylesheetId, bundle.stylesheet);
+return { componentId, stylesheetId, component: bundle.component.name, updated: Boolean(existingComponent) };

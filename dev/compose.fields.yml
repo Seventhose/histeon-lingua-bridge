@@ -1,0 +1,9 @@
+# Optional: Secure Custom Fields next to Lingua Bridge (dev/test.sh adds it when dev/.third-party has it, copied by
+# hand from a site, never in the repository): repeaters, flexible contents, groups and options pages (C14).
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/secure-custom-fields:/var/www/html/wp-content/plugins/secure-custom-fields:ro
+  cli:
+    volumes:
+      - ./.third-party/secure-custom-fields:/var/www/html/wp-content/plugins/secure-custom-fields:ro

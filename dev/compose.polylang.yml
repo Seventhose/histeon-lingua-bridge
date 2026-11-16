@@ -1,0 +1,9 @@
+# Optional: Polylang next to Lingua Bridge (dev/test.sh adds it when dev/.third-party has it, copied by hand from a
+# site, never in the repository): the importer takes its terms and its menus too (C32). Active only for its test.
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/polylang:/var/www/html/wp-content/plugins/polylang:ro
+  cli:
+    volumes:
+      - ./.third-party/polylang:/var/www/html/wp-content/plugins/polylang:ro

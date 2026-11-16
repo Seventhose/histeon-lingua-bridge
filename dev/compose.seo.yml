@@ -1,0 +1,11 @@
+# Optional: the SEO plugins next to Lingua Bridge (dev/test.sh adds them when dev/.third-party has them, copied by
+# hand from a site, never in the repository): their sitemaps get the versions of each content (C11).
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/seo-by-rank-math:/var/www/html/wp-content/plugins/seo-by-rank-math:ro
+      - ./.third-party/slim-seo:/var/www/html/wp-content/plugins/slim-seo:ro
+  cli:
+    volumes:
+      - ./.third-party/seo-by-rank-math:/var/www/html/wp-content/plugins/seo-by-rank-math:ro
+      - ./.third-party/slim-seo:/var/www/html/wp-content/plugins/slim-seo:ro

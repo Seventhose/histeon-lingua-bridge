@@ -1,0 +1,12 @@
+# Optional: Histeon next to Lingua Bridge, to test the integration (dev/test.sh adds it when HISTOS_PLUGIN exists).
+x-histos: &histos
+  - wp:/var/www/html
+  - ${LB_PLUGIN_SOURCE:-..}:/var/www/html/wp-content/plugins/lingua-bridge:ro
+  - ./mu/lb-dev-fixtures.php:/var/www/html/wp-content/mu-plugins/lb-dev-fixtures.php:ro
+  - ../tests/wp:/lb-tests:ro
+  - ${HISTOS_PLUGIN:-../../builder/plugin}:/var/www/html/wp-content/plugins/xb:ro
+services:
+  wordpress:
+    volumes: *histos
+  cli:
+    volumes: *histos

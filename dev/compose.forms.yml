@@ -1,0 +1,12 @@
+# Optional: Fluent Forms next to Lingua Bridge (dev/test.sh adds it when dev/.third-party has it, copied by hand from a
+# site, never in the repository): the texts of a form, its confirmation and the language of what is sent (C38, C22).
+# The emails it sends are kept in an option (dev/mu/lb-mail-log.php) instead of leaving.
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/fluentform:/var/www/html/wp-content/plugins/fluentform:ro
+      - ./mu/lb-mail-log.php:/var/www/html/wp-content/mu-plugins/lb-mail-log.php:ro
+  cli:
+    volumes:
+      - ./.third-party/fluentform:/var/www/html/wp-content/plugins/fluentform:ro
+      - ./mu/lb-mail-log.php:/var/www/html/wp-content/mu-plugins/lb-mail-log.php:ro

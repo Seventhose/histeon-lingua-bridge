@@ -1,0 +1,12 @@
+/* Lingua Bridge — translation mode. The panel has its own styles in a shadow root (assets/editor.js); here only
+   what the page itself shows: texts look editable, and those still to translate are marked. */
+body:has(#lb-editor) a,
+body:has(#lb-editor) button {
+	cursor: text;
+}
+
+html:not([data-lb-paused]) [data-lb-todo] {
+	outline: 2px dashed #dba617;
+	outline-offset: 2px;
+	background-color: rgba(219, 166, 23, .14);
+}

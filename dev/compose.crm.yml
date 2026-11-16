@@ -1,0 +1,9 @@
+# Optional: FluentCRM next to Fluent Forms (dev/test.sh and dev/forms.sh add it when dev/.third-party has it, copied by
+# hand from a site, never in the repository): the language of a contact and its automatic emails (1.14.0).
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/fluent-crm:/var/www/html/wp-content/plugins/fluent-crm:ro
+  cli:
+    volumes:
+      - ./.third-party/fluent-crm:/var/www/html/wp-content/plugins/fluent-crm:ro

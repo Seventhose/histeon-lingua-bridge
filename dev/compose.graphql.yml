@@ -1,0 +1,10 @@
+# Optional: WPGraphQL next to Lingua Bridge (dev/test.sh adds it when dev/.third-party has it, downloaded from
+# wordpress.org for the tests, never in the repository): the field and the argument `lingua` (C33). Active only for its
+# own test.
+services:
+  wordpress:
+    volumes:
+      - ./.third-party/wp-graphql:/var/www/html/wp-content/plugins/wp-graphql:ro
+  cli:
+    volumes:
+      - ./.third-party/wp-graphql:/var/www/html/wp-content/plugins/wp-graphql:ro

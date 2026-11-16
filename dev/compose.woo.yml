@@ -1,0 +1,9 @@
+# Optional: WooCommerce next to Lingua Bridge (dev/test.sh adds it when WOOCOMMERCE_PLUGIN names its folder;
+# a local copy only, never in the repository).
+services:
+  wordpress:
+    volumes:
+      - ${WOOCOMMERCE_PLUGIN:?set WOOCOMMERCE_PLUGIN}:/var/www/html/wp-content/plugins/woocommerce:ro
+  cli:
+    volumes:
+      - ${WOOCOMMERCE_PLUGIN:?set WOOCOMMERCE_PLUGIN}:/var/www/html/wp-content/plugins/woocommerce:ro
