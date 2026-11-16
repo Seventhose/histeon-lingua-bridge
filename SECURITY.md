@@ -16,7 +16,7 @@ Solo l'ultima release. Le versioni precedenti non ricevono correzioni: aggiorna.
 
 ## Cosa è una falla
 
-Chi può fare cosa è descritto in `readme.txt` e in `docs/`, nei sorgenti allegati a ogni release. In breve:
+Chi può fare cosa è descritto in `readme.txt` e nelle guide della cartella `docs/` di questo repository. In breve:
 
 - chi ha meno permessi riesce a fare ciò che il suo ruolo non permette;
 - contenuto salvato da un utente che esegue codice nel browser di un altro (XSS);
